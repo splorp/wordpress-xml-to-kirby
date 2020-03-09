@@ -48,8 +48,9 @@ foreach ($xml->channel->item as $item)
 	$article['timestamp'] = strtotime($item->pubDate);
 	$article['description'] = (string) trim($item->description);
 	$article['image'] = (string) trim($item->children($ns['wp'])->attachment_url);
-
-	$article['image_data'] = file_get_contents($article['image']);
+	if ($article['image']) {
+		$article['image_data'] = file_get_contents($article['image']);
+	}
 
 // Grab categories and tags for each post
 
@@ -124,7 +125,9 @@ foreach ($xml->channel->item as $item)
 
 // Save the image file associated with the post, if there is one
 
-	file_put_contents($file_image, $article['image_data']);
+	if ($article['image']) {
+		file_put_contents($file_image, $article['image_data']);
+	}
 
 // Report what happened
 
