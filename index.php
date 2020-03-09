@@ -5,14 +5,16 @@
  * in order to help Paul Swain's specific migration needs.
  * Uses HTML to Markdown functionality by Nick Cernis - https://github.com/nickcernis/html-to-markdown
  */
- ini_set('display_errors', 1);
- ini_set('display_startup_errors', 1);
- error_reporting(E_ALL);
 
-require_once('html_to_markdown.php');
+require 'vendor/autoload.php';
+use League\HTMLToMarkdown\HtmlConverter;
 
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
 
 //Define the namespaces used in the XML document
+
 $ns = array (
     'excerpt' => "http://wordpress.org/export/1.2/excerpt/",
     'content' => "http://purl.org/rss/1.0/modules/content/",
@@ -22,6 +24,7 @@ $ns = array (
 );
 
 //Get the contents of the import file
+
 $exportdir = 'export/'; //Include training slash please
 $importfile = 'typecon.wordpress.2020-03-08.speakers.xml';
 $xml = file_get_contents($importfile);
@@ -64,8 +67,10 @@ foreach ($xml->channel->item as $item)
     $article['commentRss'] = $wfw->commentRss; //Not used by Paul at present, but may be in future
 
     //Convert to markdown - optional param to strip tags
-    $markdown = new HTML_To_Markdown($article['content'], array('strip_tags' => true));
 
+    $converter = new HtmlConverter(array('strip_tags' => true));
+    $markdown = $converter->convert($article['content']);
+    
     //Addition for conversion - strip Wordpress shortcodes for captions
     $markdown = preg_replace("/\[caption(.*?)\]/", "", $markdown);
     $markdown = preg_replace("/\[\/caption\]/", "", $markdown);
