@@ -28,9 +28,9 @@ $ns = array (
 
 $exportdir = 'export/';
 
-// Specify location of the source XML file
+// Specify the source XML file
 
-$importfile = 'typecon.wordpress.2020-03-08.speakers.xml';
+$importfile = 'data.xml';
 
 // Get the contents of the XML file
 
