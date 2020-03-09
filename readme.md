@@ -1,30 +1,23 @@
 # WordPress XML to Kirby
 
 This script converts an XML file that has been exported in [WordPress eXtended RSS (WXR)](https://wordpress.org/support/article/tools-export-screen/) format to a flat file YAML structure for use with [Kirby](https://getkirby.com/).
- 
-This version of the code is based on the original script by [Sally Lait](https://github.com/greywillfade/wpxml-to-kirby) with further modifications made by [Stay Regular Media](https://github.com/stayregular/wpxml-to-kirby).
+
+This version of the code is based on the original [WPXML to Kirby](https://github.com/greywillfade/wpxml-to-kirby) script by [Sally Lait](https://sallylait.com/) with further modifications made by [Stay Regular Media](https://github.com/stayregular/wpxml-to-kirby).
 
 
-## Bugs & Things To Do
+## Requirements
 
-+ Subdirectory names are missing high ASCII characters, eg: “Adrien Tétar” generates the subdirectory “20160704-Adrien-Ttar”
-+ Possible use `wp:post_name` for correct page/subdirectory slug
-+ The `Text:` field is missing a space preceding the content
-+ Is `Coverimage:` the correct field name for the associated image?
-+ Add export fields for speaker metadata `wpcf-speaker-sort`, `wpcf-speaker-twitter`, `wpcf-speaker-instagram`
++ [Composer](https://getcomposer.org/)
++ [HTML To Markdown for PHP](https://github.com/thephpleague/html-to-markdown)
 
 
-## Release Notes
+## Usage
 
-### 20200308 — The “Word Up” Release
++ Download this repository to a working directory
++ Install the [Composer](https://getcomposer.org/) dependency manager
++ Require the [HTML To Markdown for PHP](https://github.com/thephpleague/html-to-markdown) library
 
-+ Removed `index-events.php` for Tribes Event Calendar plugin exports
-+ Updated read me to describe this version of the script
-
-
-## How to use
-
-**Note** You will need to modify your Wordpress core files to include the featured image meta data in the WPXML/RSS file.
+`composer require league/html-to-markdown`
 
 + Modify your Wordpress core files (see below)
 + Create a Wordpress export file of your posts (or events)
@@ -36,25 +29,50 @@ This version of the code is based on the original script by [Sally Lait](https:/
 
 ## Modify Core Files
 
-Open up `wp-admin/includes/export.php`
+To include the featured image metadata in the XML file, the WordPress core `export.php` file must be modified.
 
-Find this section of code around line 542-544:
++ Open up `wp-admin/includes/export.php`
++ Locate the following code around line 542-544:
 
-```php 
+```php
 <wp:post_type><?php echo wxr_cdata( $post->post_type ); ?></wp:post_type>
 <wp:post_password><?php echo wxr_cdata( $post->post_password ); ?></wp:post_password>
 <wp:is_sticky><?php echo intval( $is_sticky ); ?></wp:is_sticky>
 ```
 
-Add this code directly below the previous section:
++ Add the following code directly below the previous section:
 
-```php 
-<?php	if ( has_post_thumbnail($post->ID) ) : ?>
+```php
+<?php if ( has_post_thumbnail($post->ID) ) : ?>
 <?php $image =  wp_get_attachment_image_src(get_post_thumbnail_id($post->ID), 'full') ?>
 <wp:attachment_url><?php echo wxr_cdata( $image[0] ); ?></wp:attachment_url>
-<?php 	endif; ?>
+<?php endif; ?>
 ```
 
-After this modification, the exported files will include a link to the full-sized feature image.
+After this modification, the exported XML will include a link to the full-sized feature image.
 
 You can also modify the `get_post_thumbnail_id` function to retrieve a link to another image size or include additional XML objects for multiple image sizes.
+
+
+## Bugs & Things To Do
+
++ Subdirectory names are missing accented characters, eg: “Adrien Tétar” generates the subdirectory “20160704-Adrien-Ttar”
++ Possibly use `wp:post_name` for correct page/subdirectory slug
++ Is `Coverimage:` the correct field name for the associated image?
++ Add export fields for speaker metadata `wpcf-speaker-sort`, `wpcf-speaker-twitter`, `wpcf-speaker-instagram`
++ [HTML to Markdown](https://github.com/thephpleague/html-to-markdown) removes line breaks, need to change `%0D` (CR) to `<br>` and set `$converter->getConfig()->setOption('hard_break', true);`
+
+
+## Release Notes
+
+### 20200309 — The “Compositionally Challenged” Release
+
++ Updated [HTML to Markdown for PHP](https://github.com/thephpleague/html-to-markdown) to version [4.9.1](https://github.com/thephpleague/html-to-markdown/releases/tag/4.9.1)
++ Added checks for items that do not have associated `attachment_url` data
++ Fixed missing space preceding `Text:` content
+
+### 20200308 — The “Word Up” Release
+
++ Initial release based on the [WPXML to Kirby](https://github.com/stayregular/wpxml-to-kirby) script
++ Removed `index-events.php` for Modern Tribe’s [The Event Calendar](https://theeventscalendar.com/product/wordpress-events-calendar/) exports
++ Updated read me to describe this version of the script
