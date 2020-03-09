@@ -96,7 +96,7 @@ foreach ($xml->channel->item as $item)
         . PHP_EOL . "----" . PHP_EOL
         . "Coverimage: " . $image_name
         . PHP_EOL . "----" . PHP_EOL
-        . "Text:" . $markdown;
+        . "Text: " . $markdown;
 
     // put article
     file_put_contents($file, $strtowrite);
