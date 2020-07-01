@@ -65,6 +65,10 @@ You can also modify the `get_post_thumbnail_id` function to retrieve a link to a
 
 ## Release Notes
 
+### 20200630
+
++ Updated [HTML to Markdown for PHP](https://github.com/thephpleague/html-to-markdown) to version [4.10.0](https://github.com/thephpleague/html-to-markdown/releases/tag/4.10.0)
+
 ### 20200309 — The “Compositionally Challenged” Release
 
 + Updated [HTML to Markdown for PHP](https://github.com/thephpleague/html-to-markdown) to version [4.9.1](https://github.com/thephpleague/html-to-markdown/releases/tag/4.9.1)
