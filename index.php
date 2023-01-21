@@ -107,17 +107,16 @@ foreach ($xml->channel->item as $item)
 // Compile the content for the export
 
 	$strtowrite = "Title: " . $article['title']
-		. PHP_EOL . "----" . PHP_EOL
-		. PHP_EOL . "----" . PHP_EOL
+		. PHP_EOL . PHP_EOL . "----" . PHP_EOL . PHP_EOL 
 		. "Date: " . $article['datestamp']
 		. "Category: " . implode(', ', $categories)
-		. PHP_EOL . "----" . PHP_EOL
+		. PHP_EOL. PHP_EOL  . "----" . PHP_EOL . PHP_EOL 
 		. "Summary: "
-		. PHP_EOL . "----" . PHP_EOL
+		. PHP_EOL. PHP_EOL  . "----" . PHP_EOL . PHP_EOL 
 		. "Tags: " . implode(', ', $tags)
-		. PHP_EOL . "----" . PHP_EOL
-		. PHP_EOL . "----" . PHP_EOL
+		. PHP_EOL. PHP_EOL  . "----" . PHP_EOL . PHP_EOL 
 		. "Coverimage: " . $imagename
+		. PHP_EOL. PHP_EOL  . "----" . PHP_EOL . PHP_EOL 
 		. "Text: " . $markdown;
 
 // Save the article.txt file
