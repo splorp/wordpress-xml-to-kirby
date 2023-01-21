@@ -76,7 +76,6 @@ foreach ($xml->channel->item as $item) {
 	$article['postid'] = $wp->post_id;
 	$article['content'] = (string) trim($content->encoded);
 	$article['content'] = mb_convert_encoding($article['content'], 'HTML-ENTITIES', "UTF-8");
-	$article['commentrss'] = $wfw->commentRss;
 
 // Convert HTML to Markdown, set optional parameters
 
@@ -124,8 +123,6 @@ foreach ($xml->channel->item as $item) {
 		. PHP_EOL. PHP_EOL  . "----" . PHP_EOL . PHP_EOL 
 		. "Category: " . implode(', ', $categories)
 		. PHP_EOL. PHP_EOL  . "----" . PHP_EOL . PHP_EOL 
-		. "Summary: "
-		. PHP_EOL. PHP_EOL  . "----" . PHP_EOL . PHP_EOL 
 		. "Tags: " . implode(', ', $tags)
 		. PHP_EOL. PHP_EOL  . "----" . PHP_EOL . PHP_EOL 
 		. "Coverimage: " . $imagename
@@ -144,7 +141,7 @@ foreach ($xml->channel->item as $item) {
 
 // Report what happened
 
-	echo 'File written: ' . $file . ' at ' . date('Y-m-d H:i:s') . '<br />';
+	echo 'File written: ' . $file . ' at ' . date('Y-m-d H:i:s') . PHP_EOL;
 
 }
 
