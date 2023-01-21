@@ -44,12 +44,12 @@ foreach ($xml->channel->item as $item)
 	$article = array();
 	$article['title'] = $item->title;
 	$article['link'] = $item->link;
-	$article['pubDate'] = date('m/d/Y', strtotime($item->pubDate));
+	$article['datestamp'] = $item->pubDate;
 	$article['timestamp'] = strtotime($item->pubDate);
 	$article['description'] = (string) trim($item->description);
 	$article['image'] = (string) trim($item->children($ns['wp'])->attachment_url);
 	if ($article['image']) {
-		$article['image_data'] = file_get_contents($article['image']);
+		$article['imagedata'] = file_get_contents($article['image']);
 	}
 
 // Grab categories and tags for each post
@@ -74,7 +74,7 @@ foreach ($xml->channel->item as $item)
 
 	$article['content'] = (string) trim($content->encoded);
 	$article['content'] = mb_convert_encoding($article['content'], 'HTML-ENTITIES', "UTF-8");
-	$article['commentRss'] = $wfw->commentRss;
+	$article['commentrss'] = $wfw->commentRss;
 
 // Convert HTML to Markdown, set optional parameters (ie: strip_tags)
 
@@ -89,13 +89,14 @@ foreach ($xml->channel->item as $item)
 // Prepare various bits of content for the export
 
 	$tmptitle = str_replace(' ', '-', $article['title']);
-	$noslashes = preg_replace('/[^A-Za-z0-9\-]/', '', $tmptitle);
-	$image_name = basename($article['image']);
-	$tmpyear = date('Y', strtotime($article['pubDate']));
-	$tmpdate = date('Y/Ymd', strtotime($article['pubDate']));
-	$file = $exportdir . $tmpdate . '-' . $noslashes . '/article.txt';
-	$file_image = $exportdir . $tmpdate . '-' . $noslashes . '/' . $image_name;
-	$folder = $exportdir . $tmpdate . '-' . $noslashes;
+//	Remove slashes
+	$tmptitle = preg_replace('/[^A-Za-z0-9\-]/', '', $tmptitle);
+	$imagename = basename($article['image']);
+	$tmpyear = date('Y', strtotime($article['datestamp']));
+	$tmpdate = date('Y/Ymd', strtotime($article['datestamp']));
+	$file = $exportdir . $tmpdate . '-' . $tmptitle . '/article.txt';
+	$fileimage = $exportdir . $tmpdate . '-' . $tmptitle . '/' . $imagename;
+	$folder = $exportdir . $tmpdate . '-' . $tmptitle;
 
 // Create the directory for the export
 
@@ -107,16 +108,16 @@ foreach ($xml->channel->item as $item)
 
 	$strtowrite = "Title: " . $article['title']
 		. PHP_EOL . "----" . PHP_EOL
-		. "Date: " . $article['pubDate']
 		. PHP_EOL . "----" . PHP_EOL
+		. "Date: " . $article['datestamp']
 		. "Category: " . implode(', ', $categories)
 		. PHP_EOL . "----" . PHP_EOL
 		. "Summary: "
 		. PHP_EOL . "----" . PHP_EOL
 		. "Tags: " . implode(', ', $tags)
 		. PHP_EOL . "----" . PHP_EOL
-		. "Coverimage: " . $image_name
 		. PHP_EOL . "----" . PHP_EOL
+		. "Coverimage: " . $imagename
 		. "Text: " . $markdown;
 
 // Save the article.txt file
@@ -126,7 +127,7 @@ foreach ($xml->channel->item as $item)
 // Save the image file associated with the post, if there is one
 
 	if ($article['image']) {
-		file_put_contents($file_image, $article['image_data']);
+		file_put_contents($fileimage, $article['imagedata']);
 	}
 
 // Report what happened
