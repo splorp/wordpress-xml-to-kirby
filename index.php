@@ -12,6 +12,7 @@ use League\HTMLToMarkdown\HtmlConverter;
 
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
+setlocale(LC_CTYPE, 'en_US.UTF8');
 error_reporting(E_ALL);
 
 // Define the namespaces used in the XML document
@@ -71,7 +72,9 @@ foreach ($xml->channel->item as $item)
 
 	$content = $item->children($ns['content']);
 	$wfw = $item->children($ns['wfw']);
+	$wp = $item->children($ns['wp']);
 
+	$article['postid'] = $wp->post_id;
 	$article['content'] = (string) trim($content->encoded);
 	$article['content'] = mb_convert_encoding($article['content'], 'HTML-ENTITIES', "UTF-8");
 	$article['commentrss'] = $wfw->commentRss;
@@ -88,9 +91,17 @@ foreach ($xml->channel->item as $item)
 
 // Prepare various bits of content for the export
 
-	$tmptitle = str_replace(' ', '-', $article['title']);
+	if ($article['title'] != '')
+		{ $tmptitle = str_replace(' ', '-', $article['title']) ; }
+	else
+		{ $tmptitle = $article['postid'] ; }
+
+//	Convert accented characters to plain ASCII
+	$tmptitle = iconv('utf-8', 'ascii//TRANSLIT', $tmptitle);
 //	Remove slashes
 	$tmptitle = preg_replace('/[^A-Za-z0-9\-]/', '', $tmptitle);
+//	Convert to lowercase
+	$tmptitle = strtolower($tmptitle);
 	$imagename = basename($article['image']);
 	$tmpyear = date('Y', strtotime($article['datestamp']));
 	$tmpdate = date('Y/Ymd', strtotime($article['datestamp']));
@@ -109,6 +120,9 @@ foreach ($xml->channel->item as $item)
 	$strtowrite = "Title: " . $article['title']
 		. PHP_EOL . PHP_EOL . "----" . PHP_EOL . PHP_EOL 
 		. "Date: " . $article['datestamp']
+		. PHP_EOL. PHP_EOL  . "----" . PHP_EOL . PHP_EOL
+		. "Post ID: " . $article['postid']
+		. PHP_EOL. PHP_EOL  . "----" . PHP_EOL . PHP_EOL 
 		. "Category: " . implode(', ', $categories)
 		. PHP_EOL. PHP_EOL  . "----" . PHP_EOL . PHP_EOL 
 		. "Summary: "
