@@ -40,8 +40,7 @@ $xml = new SimpleXmlElement($xml);
 
 // Grab all the things!
 
-foreach ($xml->channel->item as $item)
-{
+foreach ($xml->channel->item as $item) {
 	$article = array();
 	$article['title'] = $item->title;
 	$article['link'] = $item->link;
@@ -79,7 +78,7 @@ foreach ($xml->channel->item as $item)
 	$article['content'] = mb_convert_encoding($article['content'], 'HTML-ENTITIES', "UTF-8");
 	$article['commentrss'] = $wfw->commentRss;
 
-// Convert HTML to Markdown, set optional parameters (ie: strip_tags)
+// Convert HTML to Markdown, set optional parameters
 
 	$converter = new HtmlConverter(array('strip_tags' => true));
 	$markdown = $converter->convert($article['content']);
