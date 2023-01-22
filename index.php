@@ -25,13 +25,13 @@ $ns = array (
 	'wp' => "http://wordpress.org/export/1.2/"
 );
 
-// Specify the directory where files will be exported, including a trailing slash
-
-$exportdir = 'export/';
-
 // Specify the source XML file
 
 $importfile = 'data.xml';
+
+// Specify the directory where files will be exported, including a trailing slash
+
+$exportdir = 'export/';
 
 // Get the contents of the XML file
 
@@ -106,7 +106,7 @@ foreach ($xml->channel->item as $item) {
 	$imagename = basename($article['image']);
 	$tmpyear = date('Y', strtotime($article['datestamp']));
 	$tmpdate = date('Y/Ymd', strtotime($article['datestamp']));
-	$file = $exportdir . $tmpdate . '-' . $tmptitle . '/article.txt';
+	$file = $exportdir . $tmpdate . '-' . $tmptitle . '/post.txt';
 	$fileimage = $exportdir . $tmpdate . '-' . $tmptitle . '/' . $imagename;
 	$folder = $exportdir . $tmpdate . '-' . $tmptitle;
 
