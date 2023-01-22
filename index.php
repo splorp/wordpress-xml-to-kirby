@@ -75,11 +75,14 @@ foreach ($xml->channel->item as $item) {
 
 	$article['postid'] = $wp->post_id;
 	$article['content'] = (string) trim($content->encoded);
+	$article['content'] = str_replace(PHP_EOL . PHP_EOL, '<br><br>', $article['content']);
 	$article['content'] = mb_convert_encoding($article['content'], 'HTML-ENTITIES', "UTF-8");
 
 // Convert HTML to Markdown, set optional parameters
 
-	$converter = new HtmlConverter(array('strip_tags' => true));
+	$converter = new HtmlConverter();
+	$converter->getConfig()->setOption('hard_break', true);
+	$converter->getConfig()->setOption('strip_tags', true);
 	$markdown = $converter->convert($article['content']);
 	
 // Strip WordPress caption shortcodes, optional
@@ -125,9 +128,10 @@ foreach ($xml->channel->item as $item) {
 		. PHP_EOL. PHP_EOL  . "----" . PHP_EOL . PHP_EOL 
 		. "Tags: " . implode(', ', $tags)
 		. PHP_EOL. PHP_EOL  . "----" . PHP_EOL . PHP_EOL 
-		. "Coverimage: " . $imagename
-		. PHP_EOL. PHP_EOL  . "----" . PHP_EOL . PHP_EOL 
-		. "Text: " . $markdown;
+		. ( $imagename ?
+		"Featured: " . $imagename
+		. PHP_EOL. PHP_EOL  . "----" . PHP_EOL . PHP_EOL : '' )
+		. "Text: " . PHP_EOL. PHP_EOL . $markdown;
 
 // Save the article.txt file
 
