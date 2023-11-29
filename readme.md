@@ -33,8 +33,8 @@ composer require league/html-to-markdown
 + Create an export directory in the working directory with full permissions
 
 ```
-mkdir /wpxml-to-kirby/export`
-chmod 777 /wpxml-to-kirby/export
+mkdir /wordpress-xml-to-kirby/export`
+chmod 777 /wordpress-xml-to-kirby/export
 ```
 
 + Edit `convert.php` to add the name of the XML file and the export directory
